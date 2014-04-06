@@ -1,4 +1,4 @@
-package com.android.EMVemulator;
+package com.kysel.EMVemulator;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
         private void readCard() {
             try {
                 String temp;
-                File myFile = new File("/storage/sdcard0/Download/card.txt");
+                File myFile = new File("/storage/sdcard0/Download/EMV.card");
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);

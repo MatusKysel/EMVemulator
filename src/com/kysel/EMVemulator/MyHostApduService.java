@@ -1,4 +1,4 @@
-package com.android.EMVemulator;
+package com.kysel.EMVemulator;
 
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
@@ -65,7 +65,7 @@ public class MyHostApduService extends HostApduService {
     public void getCardData() {
 
         crypto_checksum = new String[1000];
-        File myFile = new File("/storage/sdcard0/Download/card.txt");
+        File myFile = new File("/storage/sdcard0/Download/EMV.card");
         FileInputStream fIn = null;
         try {
             fIn = new FileInputStream(myFile);
