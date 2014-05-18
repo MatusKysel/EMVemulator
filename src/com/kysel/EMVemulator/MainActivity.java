@@ -19,22 +19,26 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 
+/*! Main Activity class with inner Card reading class*/
 
 public class MainActivity extends Activity {
 
-    private NfcAdapter nfcAdapter;
-    private Tag tag;
-    private IsoDep tagcomm;
-    private String[][] nfctechfilter = new String[][]{new String[]{NfcA.class.getName()}};
-    private PendingIntent nfcintent;
-    private TextView cardType;
-    private TextView intro;
-    private TextView progress;
-    private TextView cardNumber;
-    private TextView cardExipration;
+    private NfcAdapter nfcAdapter;                                                              /*!< represents the local NFC adapter */
+    private Tag tag;                                                                            /*!< represents an NFC tag that has been discovered */
+    private IsoDep tagcomm;                                                                     /*!< provides access to ISO-DEP (ISO 14443-4) properties and I/O operations on a Tag */
+    private String[][] nfctechfilter = new String[][]{new String[]{NfcA.class.getName()}};      /*!<  NFC tech lists */
+    private PendingIntent nfcintent;                                                            /*!< reference to a token maintained by the system describing the original data used to retrieve it */
+    private TextView cardType;                                                                  /*!< TextView representing type of card */
+    private TextView intro;                                                                     /*!< TextView representing simple information about what is going on */
+    private TextView progress;                                                                  /*!< TextView representing percentage of read data */
+    private TextView cardNumber;                                                                /*!< TextView representing card number */
+    private TextView cardExpiration;                                                            /*!< TextView representing card expiration */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*!
+            This method is where activity is initialized
+         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -43,11 +47,14 @@ public class MainActivity extends Activity {
         progress = (TextView) findViewById(R.id.progress);
         cardType = (TextView) findViewById(R.id.cardType);
         cardNumber = (TextView) findViewById(R.id.cardNumber);
-        cardExipration = (TextView) findViewById(R.id.cardExipration);
+        cardExpiration = (TextView) findViewById(R.id.cardExipration);
     }
 
     @Override
     public void onResume() {
+        /*!
+            This method is called when user returns to the activity
+         */
         super.onResume();
         //nfcAdapter.enableReaderMode(this, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,null);
         nfcAdapter.enableForegroundDispatch(this, nfcintent, null, nfctechfilter);
@@ -55,26 +62,39 @@ public class MainActivity extends Activity {
 
     @Override
     public void onPause() {
+        /*!
+            This method disable reader mode (enable emulation) when user leave the activity
+         */
         super.onPause();
         nfcAdapter.disableReaderMode(this);
         //nfcAdapter.disableForegroundDispatch(this);
     }
 
     protected void onNewIntent(Intent intent) {
+        /*!
+            This is called when NFC tag is detected
+         */
         super.onNewIntent(intent);
         tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         Log.i("EMVemulator", "Tag detected");
         new CardReader().execute(tag);
     }
 
+    /*!
+        Inner class that allows to preform card reading in background
+        and publish results on the UI thread without having to manipulate threads and handlers
+    */
     private class CardReader extends AsyncTask<Tag, String, String> {
-        String cardtype;
-        String cardnumber;
-        String cardexipration;
-        String error;
+        String cardtype;            /*!< string with card type */
+        String cardnumber;          /*!< string with card number */
+        String cardexpiration;      /*!< string with card expiration*/
+        String error;               /*!< string with error value */
 
         @Override
         protected String doInBackground(Tag... params) {
+            /*!
+                This method performs background computation (Reading card data) that can take a long time ( up to 60-90 sec)
+             */
             Tag tag = params[0];
             tagcomm = IsoDep.get(tag);
             try {
@@ -96,6 +116,10 @@ public class MainActivity extends Activity {
         }
 
         private void readCard() {
+            /*!
+                This method reads all data from card to perform successful Mag-Stripe
+                transaction and saves them to file.
+             */
             try {
                 String temp;
                 File myFile = new File("/storage/sdcard0/Download/EMV.card");
@@ -114,7 +138,7 @@ public class MainActivity extends Activity {
                     cardtype = "Visa";
                 recv = transceive(temp);
                 myOutWriter.append(Byte2Hex(recv) + "\n");
-                //recv = transceive("80 A8 00 00 02 83 00 00"); ---- netreba staci tu odpoved napevno
+                //recv = transceive("80 A8 00 00 02 83 00 00");
                 //recv = transceive("80 A8 00 00 05 04 06 04 02 00");
                 //myOutWriter.append(Byte2Hex(recv)+"\n");
                 myOutWriter.append(toMagStripeMode() + "\n");
@@ -122,7 +146,7 @@ public class MainActivity extends Activity {
                 myOutWriter.append(Byte2Hex(recv) + "\n");
                 if (cardtype == "MasterCard") {
                     cardnumber = "Card number: " + new String(Arrays.copyOfRange(recv, 28, 44));
-                    cardexipration = "Card expiration: " + new String(Arrays.copyOfRange(recv, 50, 52)) + "/" + new String(Arrays.copyOfRange(recv, 48, 50));
+                    cardexpiration = "Card expiration: " + new String(Arrays.copyOfRange(recv, 50, 52)) + "/" + new String(Arrays.copyOfRange(recv, 48, 50));
 
                     for (int i = 0; i < 1000; i++) {
                         recv = transceive("80 A8 00 00 02 83 00 00");
@@ -139,7 +163,7 @@ public class MainActivity extends Activity {
                 }
                 if (cardtype == "Visa" || cardtype == "Visa Electron") {
                     cardnumber = "Card number: " + Byte2Hex(recv).substring(12, 36).replaceAll(" ", "");
-                    cardexipration = "Card expiration: " + Byte2Hex(recv).substring(40, 43).replaceAll(" ", "") + "/" + Byte2Hex(recv).substring(37, 40).replaceAll(" ", "");
+                    cardexpiration = "Card expiration: " + Byte2Hex(recv).substring(40, 43).replaceAll(" ", "") + "/" + Byte2Hex(recv).substring(37, 40).replaceAll(" ", "");
                 }
 
                 Log.i("EMVemulator", "Done!");
@@ -154,6 +178,9 @@ public class MainActivity extends Activity {
 
 
         protected byte[] transceive(String hexstr) throws IOException {
+            /*!
+                This method transceives all the data.
+             */
             String[] hexbytes = hexstr.split("\\s");
             byte[] bytes = new byte[hexbytes.length];
             for (int i = 0; i < hexbytes.length; i++) {
@@ -167,6 +194,9 @@ public class MainActivity extends Activity {
 
 
         protected String Byte2Hex(byte[] input) {
+        /*!
+            This method converts bytes to strings of hex
+         */
             StringBuilder result = new StringBuilder();
             for (Byte inputbyte : input) {
                 result.append(String.format("%02X" + " ", inputbyte));
@@ -175,25 +205,37 @@ public class MainActivity extends Activity {
         }
 
         protected String toMagStripeMode() {
+            /*
+                This method just returns card response with only Mag-Stripe mode support
+             */
             return "770A820200009404080101009000";
         }
 
         protected void onProgressUpdate(String... percentage) {
+            /*!
+                Updates UI thread with progress
+             */
             progress.setText("Reading card data ... " + percentage[0] + "%");
         }
 
         protected void onPreExecute() {
+            /*!
+                This method update UI thread before the card reading task is executed.
+             */
             intro.setText("Card detected!");
         }
 
         protected void onPostExecute(String result) {
+            /*!
+                This method update/display results of background card reading when the reading finishes.
+             */
             progress.setText("Reading card data ... completed");
             if (error != null)
                 progress.setText(error);
             Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
             cardType.setText(cardtype);
             cardNumber.setText(cardnumber);
-            cardExipration.setText(cardexipration);
+            cardExpiration.setText(cardexpiration);
         }
 
     }

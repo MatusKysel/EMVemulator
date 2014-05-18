@@ -11,18 +11,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/*! Card emulation class */
+
 
 public class MyHostApduService extends HostApduService {
 
 
-    private String ppse;
-    private String card_application;
-    private String processing_options;
-    private String records;
-    private String[] crypto_checksum;
+    private String ppse;                /*!< string with ppse response to POS */
+    private String card_application;    /*!< string with card application response to POS */
+    private String processing_options;  /*!< string with processing options response to POS */
+    private String records;             /*!< string with records  response to POS */
+    private String[] crypto_checksum;   /*!< array of string with cryptographic checksum response to POS for any possible UN */
 
     @Override
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
+        /*!
+         This method is called whenever a NFC reader sends an Application Protocol Data Unit (APDU) to our service
+         and send back to NFC reader correct response.
+         */
         if (ppse == null)
             getCardData();
 
@@ -63,6 +69,10 @@ public class MyHostApduService extends HostApduService {
     }
 
     public void getCardData() {
+        /*!
+            This method reads all data from file saved in your device.
+            Its called when the first apdu from reader is detected.
+         */
 
         crypto_checksum = new String[1000];
         File myFile = new File("/storage/sdcard0/Download/EMV.card");
@@ -96,6 +106,9 @@ public class MyHostApduService extends HostApduService {
 
 
     public static byte[] fromHex2Byte(String digits) {
+        /*!
+            This method converts strings in hex to bytes
+         */
         digits = digits.replace(" ", "");
         final int bytes = digits.length() / 2;
         byte[] result = new byte[bytes];
@@ -106,6 +119,9 @@ public class MyHostApduService extends HostApduService {
     }
 
     static protected String fromByte2Hex(byte[] input) {
+         /*!
+            This method converts bytes to strings of hex
+         */
         StringBuilder result = new StringBuilder();
         for (Byte inputbyte : input) {
             result.append(String.format("%02X" + " ", inputbyte));
@@ -115,6 +131,11 @@ public class MyHostApduService extends HostApduService {
 
     @Override
     public void onDeactivated(int reason) {
+        /*!
+            This method will be called in two possible scenarios:
+            - The NFC link has been deactivated or lost
+            - A different AID has been selected and was resolved to a different service component
+         */
         Log.i("EMVemulator", "Deactivated: " + reason);
     }
 }
