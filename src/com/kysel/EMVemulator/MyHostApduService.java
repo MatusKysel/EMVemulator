@@ -56,7 +56,7 @@ public class MyHostApduService extends HostApduService {
         if (apdu[0] == (byte) 0x80 && apdu[1] == (byte) 0x2a && apdu[2] == (byte) 0x8e && apdu[3] == (byte) 0x80 && apdu[4] == (byte) 0x04) {
             Log.i("EMVemulator", "Received: " + fromByte2Hex(apdu));
 
-            int i = Integer.parseInt(fromByte2Hex(apdu).substring(15, 18));
+            int i = Integer.parseInt(fromByte2Hex(apdu).replaceAll("\\s+","").substring(15, 18));
             Log.i("EMVemulator", "Pozor: " + String.valueOf(i));
             return fromHex2Byte(crypto_checksum[i]);
         } else {

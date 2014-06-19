@@ -127,6 +127,7 @@ public class MainActivity extends Activity {
                 FileOutputStream fOut = new FileOutputStream(myFile);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
                 byte[] recv = transceive("00 A4 04 00 0E 32 50 41 59 2E 53 59 53 2E 44 44 46 30 31 00");
+                myOutWriter.append(Byte2Hex(recv) + "\n");
                 temp = "00 A4 04 00 07";
                 temp += Byte2Hex(recv).substring(80, 102);
                 temp += "00";
@@ -138,9 +139,6 @@ public class MainActivity extends Activity {
                     cardtype = "Visa";
                 recv = transceive(temp);
                 myOutWriter.append(Byte2Hex(recv) + "\n");
-                //recv = transceive("80 A8 00 00 02 83 00 00");
-                //recv = transceive("80 A8 00 00 05 04 06 04 02 00");
-                //myOutWriter.append(Byte2Hex(recv)+"\n");
                 myOutWriter.append(toMagStripeMode() + "\n");
                 recv = transceive("00 B2 01 0C 00");
                 myOutWriter.append(Byte2Hex(recv) + "\n");
