@@ -13,3 +13,17 @@ It is based on combined pre-play and downgrade attack described in [Cloning Cred
 
 ##Usage##
 This is just proof of concept application, so interface is quite simple.
+
+1, This screen shows, that app is ready for reading card
+
+![alt text](https://github.com/MatusKysel/EMVemulator/raw/master/pic/Readermode.png "App is ready")
+
+2, When you have compatible card (MasterCard PayPass) app will start collecting data
+
+![alt text](https://github.com/MatusKysel/EMVemulator/raw/master/pic/Reading.png "Collecting data")
+
+3, Data collection is completed and your phone is ready for emulating your card
+
+![alt text](https://github.com/MatusKysel/EMVemulator/raw/master/pic/Completed.png "Finished")
+
+4, Now you can put this app to background or just close it and whenever you want to reply collected data just turn on your screen and app will start to communicate with reader
