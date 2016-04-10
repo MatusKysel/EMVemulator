@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         progress = (TextView) findViewById(R.id.progress);
         cardType = (TextView) findViewById(R.id.cardType);
         cardNumber = (TextView) findViewById(R.id.cardNumber);
-        cardExpiration = (TextView) findViewById(R.id.cardExipration);
+        cardExpiration = (TextView) findViewById(R.id.cardExpiration);
     }
 
     @Override
@@ -122,9 +122,7 @@ public class MainActivity extends Activity {
              */
             try {
                 String temp;
-                File myFile = new File("/storage/sdcard0/Download/EMV.card");
-                myFile.createNewFile();
-                FileOutputStream fOut = new FileOutputStream(myFile);
+                FileOutputStream fOut = openFileOutput("EMV.card", MODE_PRIVATE);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
                 byte[] recv = transceive("00 A4 04 00 0E 32 50 41 59 2E 53 59 53 2E 44 44 46 30 31 00");
                 myOutWriter.append(Byte2Hex(recv) + "\n");
@@ -169,8 +167,8 @@ public class MainActivity extends Activity {
                 fOut.close();
 
             } catch (IOException e) {
-                Log.i("EMVemulator", "Error readCard");
-                error = "Reading card data ... Error readCard";
+                Log.i("EMVemulator", "Error readCard: " + e.getMessage());
+                error = "Reading card data ... Error readCard " + e.getMessage();
             }
         }
 
