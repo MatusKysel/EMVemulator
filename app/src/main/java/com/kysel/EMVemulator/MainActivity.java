@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -100,16 +99,16 @@ public class MainActivity extends Activity {
             try {
                 tagcomm.connect();
             } catch (IOException e) {
-                Log.i("EMVemulator", "Error tagcomm");
-                error = "Reading card data ... Error tagcomm";
+                Log.i("EMVemulator", "Error tagcomm: " + e.getMessage());
+                error = "Reading card data ... Error tagcomm: " + e.getMessage();
                 return null;
             }
             try {
                 readCard();
                 tagcomm.close();
             } catch (IOException e) {
-                Log.i("EMVemulator", "Error tranceive");
-                error = "Reading card data ... Error tranceive";
+                Log.i("EMVemulator", "Error tranceive: " + e.getMessage());
+                error = "Reading card data ... Error tranceive: " + e.getMessage();
                 return null;
             }
             return null;
@@ -168,7 +167,7 @@ public class MainActivity extends Activity {
 
             } catch (IOException e) {
                 Log.i("EMVemulator", "Error readCard: " + e.getMessage());
-                error = "Reading card data ... Error readCard " + e.getMessage();
+                error = "Reading card data ... Error readCard: " + e.getMessage();
             }
         }
 

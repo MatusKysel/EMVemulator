@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -75,12 +74,11 @@ public class MyHostApduService extends HostApduService {
          */
 
         crypto_checksum = new String[1000];
-        File myFile = new File("/storage/sdcard0/Download/EMV.card");
         FileInputStream fIn = null;
         try {
-            fIn = new FileInputStream(myFile);
+            fIn = openFileInput("EMV.card");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.i("EMVemulator",  "Open file error: " + e.getMessage());
         }
         BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
         try {
