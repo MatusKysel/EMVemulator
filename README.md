@@ -9,7 +9,7 @@ It is based on combined pre-play and downgrade attack described in [Cloning Cred
 ##Downloads##
 [Source code](https://github.com/MatusKysel/EMVemulator/archive/v1.1.zip)
 
-[APK](https://github.com/MatusKysel/EMVemulator/releases/download/v1.1/app-release-unsigned.apk)
+[APK](https://github.com/MatusKysel/EMVemulator/releases/download/v1.1/EMVemulator.apk)
 
 ##Usage##
 This is just proof of concept application, so interface is quite simple.
