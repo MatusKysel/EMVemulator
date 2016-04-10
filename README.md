@@ -7,9 +7,9 @@ It is based on combined pre-play and downgrade attack described in [Cloning Cred
 *For each attack application increments card's ATC by 1000. ATC (Application Transaction Counter) is 2B value that means that maximum value of ATC is 65535, so after approximately 66 attacks this counter overflows.
 
 ##Downloads##
-[Source code](https://github.com/MatusKysel/EMVemulator/archive/v1.0.zip)
+[Source code](https://github.com/MatusKysel/EMVemulator/archive/v1.1.zip)
 
-[APK](https://github.com/MatusKysel/EMVemulator/releases/download/v1.0/EMVemulator.apk)
+[APK](https://github.com/MatusKysel/EMVemulator/releases/download/v1.1/app-release-unsigned.apk)
 
 ##Usage##
 This is just proof of concept application, so interface is quite simple.
