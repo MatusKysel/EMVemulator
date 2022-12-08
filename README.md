@@ -1,4 +1,6 @@
 # EMVemulator
+**IMPORTANT - THIS REPO IS NO LONGER MAINTAINED**
+
 This Android app collects Mag-Stripe data and CVC3 codes from MasterCard PayPass cards and emulates that information.
 It is based on combined pre-play and downgrade attack described in [Cloning Credit Cards: A combined pre-play and downgrade attack on EMV Contactless](https://github.com/MatusKysel/EMVemulator/raw/master/Cloning%20Credit%20Cards%20A%20combined%20pre-play-Roland.pdf) by Michael Roland, Josef Langer.
 
